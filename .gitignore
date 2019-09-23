@@ -2,4 +2,8 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/INFOIBV/v15/Server/sqlite3/db.lock
+/bin/Debug
+/obj/x86/Debug
+/.vs/BVFilters3/v15
+/.vs/INFOIBV/v15/Server/sqlite3
+/.vs/INFOIBV/v15
