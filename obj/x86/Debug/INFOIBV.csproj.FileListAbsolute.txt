@@ -7,3 +7,12 @@ D:\Shared\Image Processing\assignment\INFOIBV\obj\x86\Debug\GenerateResource.rea
 D:\Shared\Image Processing\assignment\INFOIBV\obj\x86\Debug\GenerateResource.write.1.tlog
 D:\Shared\Image Processing\assignment\INFOIBV\obj\x86\Debug\INFOIBV.exe
 D:\Shared\Image Processing\assignment\INFOIBV\obj\x86\Debug\INFOIBV.pdb
+C:\Users\HP\Source\Repos\BVFilters2\bin\Debug\INFOIBV.exe
+C:\Users\HP\Source\Repos\BVFilters2\bin\Debug\INFOIBV.pdb
+C:\Users\HP\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.csprojAssemblyReference.cache
+C:\Users\HP\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.INFOIBV.resources
+C:\Users\HP\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.Properties.Resources.resources
+C:\Users\HP\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.csproj.GenerateResource.cache
+C:\Users\HP\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.csproj.CoreCompileInputs.cache
+C:\Users\HP\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.exe
+C:\Users\HP\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.pdb
