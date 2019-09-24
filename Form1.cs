@@ -146,7 +146,48 @@ namespace INFOIBV
 
         private void Dialation()
         {
+            bool[,] H = GetH();
 
+            int rounds;
+            try
+            {
+                rounds = int.Parse(textBox1.Text);
+            }
+            catch
+            {
+                return;
+            }
+
+            for (int Nr = 0; Nr < rounds; Nr++)
+            {
+                Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
+                for (int x = 0; x < InputImage.Size.Width; x++)
+                {
+                    for (int y = 0; y < InputImage.Size.Height; y++)
+                    {
+                        OriginalImage[x, y] = Image[x, y];
+                    }
+                }
+
+                for (int x = 0; x < InputImage.Size.Width; x++)
+                {
+                    for (int y = 0; y < InputImage.Size.Height; y++)
+                    {
+                        int minColor = 0;
+                        for (int i = -1; i <= 1; i++)
+                        {
+                            for (int j = -1; j <= 1; j++)
+                            {
+                                if (H[i + 1, j + 1] && x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height)
+                                    minColor = Math.Max(minColor, OriginalImage[x + i, y + j].R);
+                            }
+                        }
+                        Image[x, y] = Color.FromArgb(minColor, minColor, minColor);         // Set the new pixel color at coordinate (x,y)
+                        if (y % rounds == 0)
+                            progressBar.PerformStep();                              // Increment progress bar
+                    }
+                }
+            }
         }
 
         private bool[,] GetH()
