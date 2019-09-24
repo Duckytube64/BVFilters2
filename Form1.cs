@@ -15,6 +15,7 @@ namespace INFOIBV
         private Bitmap InputImage;
         private Bitmap OutputImage;
         Color[,] Image;
+        bool doubleProgress = false;
 
         public INFOIBV()
         {
@@ -74,10 +75,22 @@ namespace INFOIBV
             switch (filter)
             {                
                 case ("Erosion"):
-                    Erosion();
+                    ErosionOrDialation(true);
                     break;
                 case ("Dialation"):
-                    Dialation();
+                    ErosionOrDialation(false);
+                    break;
+                case ("Opening"):
+                    doubleProgress = true;
+                    ErosionOrDialation(true);
+                    ErosionOrDialation(false);
+                    doubleProgress = false;
+                    break;
+                case ("Closing"):
+                    doubleProgress = true;
+                    ErosionOrDialation(false);
+                    ErosionOrDialation(true);
+                    doubleProgress = false;
                     break;
                 case ("Nothing"):
                 default:
@@ -98,10 +111,10 @@ namespace INFOIBV
             progressBar.Visible = false;                                    // Hide progress bar
         }       
 
-        private void Erosion()
+        private void ErosionOrDialation(bool IsErosion)
         {
             bool[,] H = GetH();
-
+            int baseMinColor;
             int rounds;
             try
             {
@@ -111,6 +124,11 @@ namespace INFOIBV
             {
                 return;
             }
+
+            if (IsErosion)
+                baseMinColor = 255;
+            else
+                baseMinColor = 0;
 
             for (int Nr = 0; Nr < rounds; Nr++)
             {
@@ -127,63 +145,27 @@ namespace INFOIBV
                 {
                     for (int y = 0; y < InputImage.Size.Height; y++)
                     {
-                        int minColor = 255;
+                        int minColor = baseMinColor;
                         for (int i = -1; i <= 1; i++)
                         {
                             for (int j = -1; j <= 1; j++)
                             {
                                 if (H[i + 1, j + 1] && x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height)
-                                    minColor = Math.Min(minColor, OriginalImage[x + i, y + j].R);
+                                {
+                                    if (IsErosion)
+                                        minColor = Math.Min(minColor, OriginalImage[x + i, y + j].R);
+                                    else
+                                        minColor = Math.Max(minColor, OriginalImage[x + i, y + j].R);
+                                }
                             }
                         }
                         Image[x, y] = Color.FromArgb(minColor, minColor, minColor);         // Set the new pixel color at coordinate (x,y)
-                        if (y % rounds == 0)
-                            progressBar.PerformStep();                              // Increment progress bar
-                    }
-                }
-            }
-        }
-
-        private void Dialation()
-        {
-            bool[,] H = GetH();
-
-            int rounds;
-            try
-            {
-                rounds = int.Parse(textBox1.Text);
-            }
-            catch
-            {
-                return;
-            }
-
-            for (int Nr = 0; Nr < rounds; Nr++)
-            {
-                Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
-                for (int x = 0; x < InputImage.Size.Width; x++)
-                {
-                    for (int y = 0; y < InputImage.Size.Height; y++)
-                    {
-                        OriginalImage[x, y] = Image[x, y];
-                    }
-                }
-
-                for (int x = 0; x < InputImage.Size.Width; x++)
-                {
-                    for (int y = 0; y < InputImage.Size.Height; y++)
-                    {
-                        int minColor = 0;
-                        for (int i = -1; i <= 1; i++)
+                        if (doubleProgress)
                         {
-                            for (int j = -1; j <= 1; j++)
-                            {
-                                if (H[i + 1, j + 1] && x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height)
-                                    minColor = Math.Max(minColor, OriginalImage[x + i, y + j].R);
-                            }
+                            if (y % (rounds * 2) == 0)
+                                progressBar.PerformStep();                          // Increment progress bar
                         }
-                        Image[x, y] = Color.FromArgb(minColor, minColor, minColor);         // Set the new pixel color at coordinate (x,y)
-                        if (y % rounds == 0)
+                        else if (y % rounds == 0)
                             progressBar.PerformStep();                              // Increment progress bar
                     }
                 }

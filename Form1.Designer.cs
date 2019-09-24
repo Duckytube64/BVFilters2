@@ -136,7 +136,9 @@
             this.comboBox1.Items.AddRange(new object[] {
             "Nothing",
             "Erosion",
-            "Dialation"});
+            "Dialation",
+            "Opening",
+            "Closing"});
             this.comboBox1.Location = new System.Drawing.Point(841, 14);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(2);
             this.comboBox1.Name = "comboBox1";
@@ -306,7 +308,9 @@
             this.textBox2.Visible = false;
             DisableCheckBoxes();
 
-            if ((string)cb.SelectedItem == "Erosion" || (string)cb.SelectedItem == "Dialation")
+            string selected = (string)cb.SelectedItem;
+
+            if (selected == "Erosion" || selected == "Dialation" || selected == "Opening" || selected == "Closing")
             {
                 this.textBox1.Visible = true;
                 this.textBox1.Text = "#rounds";
