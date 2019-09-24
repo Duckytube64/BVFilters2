@@ -127,13 +127,13 @@ namespace INFOIBV
                 {
                     for (int y = 0; y < InputImage.Size.Height; y++)
                     {
-                        int minColor = 0;
+                        int minColor = 255;
                         for (int i = -1; i <= 1; i++)
                         {
                             for (int j = -1; j <= 1; j++)
                             {
                                 if (H[i + 1, j + 1] && x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height)
-                                    minColor = Math.Max(minColor, OriginalImage[x + i, y + j].R);
+                                    minColor = Math.Min(minColor, OriginalImage[x + i, y + j].R);
                             }
                         }
                         Image[x, y] = Color.FromArgb(minColor, minColor, minColor);         // Set the new pixel color at coordinate (x,y)
