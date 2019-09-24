@@ -49,3 +49,4 @@ C:\Users\Steven\Source\Repos\BVFilters2\bin\Debug\INFOIBV.pdb
 C:\Users\Steven\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.INFOIBV.resources
 C:\Users\Steven\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.Properties.Resources.resources
 C:\Users\Steven\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.csproj.GenerateResource.Cache
+C:\Users\Steven\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.csprojResolveAssemblyReference.cache

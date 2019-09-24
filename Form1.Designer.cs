@@ -138,7 +138,8 @@
             "Erosion",
             "Dialation",
             "Opening",
-            "Closing"});
+            "Closing",
+            "Complement" });
             this.comboBox1.Location = new System.Drawing.Point(841, 14);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(2);
             this.comboBox1.Name = "comboBox1";

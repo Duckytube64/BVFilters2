@@ -92,6 +92,9 @@ namespace INFOIBV
                     ErosionOrDialation(true);
                     doubleProgress = false;
                     break;
+                case ("Complement"):
+                    complement();
+                    break;
                 case ("Nothing"):
                 default:
                     break;
@@ -168,6 +171,20 @@ namespace INFOIBV
                         else if (y % rounds == 0)
                             progressBar.PerformStep();                              // Increment progress bar
                     }
+                }
+            }
+        }
+
+        private void complement()
+        {
+            for (int x = 0; x < InputImage.Size.Width; x++)
+            {
+                for (int y = 0; y < InputImage.Size.Height; y++)
+                {
+                    Color pixelColor = Image[x, y];                         // Get the pixel color at coordinate (x,y)
+                    Color updatedColor = Color.FromArgb(255 - pixelColor.R, 255 - pixelColor.G, 255 - pixelColor.B); // Negative image
+                    Image[x, y] = updatedColor;                             // Set the new pixel color at coordinate (x,y)
+                    progressBar.PerformStep();                              // Increment progress bar
                 }
             }
         }
