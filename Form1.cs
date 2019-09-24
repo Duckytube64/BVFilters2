@@ -93,8 +93,11 @@ namespace INFOIBV
                     doubleProgress = false;
                     break;
                 case ("Complement"):
-                    complement();
+                    Complement();
                     break;
+            /*    case ("And"):
+                    And();
+                    break;    */
                 case ("Nothing"):
                 default:
                     break;
@@ -175,7 +178,7 @@ namespace INFOIBV
             }
         }
 
-        private void complement()
+        private void Complement()
         {
             for (int x = 0; x < InputImage.Size.Width; x++)
             {
@@ -188,6 +191,22 @@ namespace INFOIBV
                 }
             }
         }
+
+       /* private void And()
+        {
+            for (int x = 0; x < InputImage.Size.Width; x++)
+            {
+                for (int y = 0; y < InputImage.Size.Height; y++)
+                {
+                    if (Image[x, y] == Image2.GetPixel(x, y))       // Nog een manier maken om een tweede Image te laden
+                        Image[x, y] = Image[x, y];
+                    else
+                        Image[x, y] = Color.White;
+                }
+            }
+        }
+
+    */
 
         private bool[,] GetH()
         {
