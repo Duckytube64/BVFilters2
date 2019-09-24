@@ -72,30 +72,12 @@ namespace INFOIBV
             string filter = (string)comboBox1.SelectedItem;
 
             switch (filter)
-            {
-                case ("Negative"):
-                    Negative();
+            {                
+                case ("Erosion"):
+                    Erosion();
                     break;
-                case ("Grayscale"):
-                    Grayscale();
-                    break;
-                case ("Contrast adjustment"):
-                    ContrastAdjustment();
-                    break;
-                case ("Linear filter"):
-                    LinearFilter();
-                    break;
-                case ("Nonlinear filter"):
-                    NonlinearFilter();
-                    break;
-                case ("Gaussian filter"):
-                    GaussianFilter();
-                    break;
-                case ("Edge detection"):
-                    EdgeDetection();
-                    break;
-                case ("Thresholding"):
-                    Thresholding();
+                case ("Dialation"):
+                    Dialation();
                     break;
                 case ("Nothing"):
                 default:
@@ -114,343 +96,72 @@ namespace INFOIBV
 
             pictureBox2.Image = (Image)OutputImage;                         // Display output image
             progressBar.Visible = false;                                    // Hide progress bar
-        }
+        }       
 
-        private void Negative()
+        private void Erosion()
         {
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {
-                    Color pixelColor = Image[x, y];                         // Get the pixel color at coordinate (x,y)
-                    Color updatedColor = Color.FromArgb(255 - pixelColor.R, 255 - pixelColor.G, 255 - pixelColor.B); // Negative image
-                    Image[x, y] = updatedColor;                             // Set the new pixel color at coordinate (x,y)
-                    progressBar.PerformStep();                              // Increment progress bar
-                }
-            }
-        }
+            bool[,] H = GetH();
 
-        private void Grayscale()
-        {
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {
-                    Color pixelColor = Image[x, y];                         // Get the pixel color at coordinate (x,y)
-                    int Clinear = (int)(0.2126f * pixelColor.R + 0.7152 * pixelColor.G + 0.0722 * pixelColor.B); // Calculate grayscale
-                    Color updatedColor = Color.FromArgb(Clinear, Clinear, Clinear); // Grayscale image
-                    Image[x, y] = updatedColor;                             // Set the new pixel color at coordinate (x,y)
-                    progressBar.PerformStep();                              // Increment progress bar
-                }
-            }
-        }
-
-        private void ContrastAdjustment()
-        {
-            byte minimumValue = 255, maximumValue = 0;
-
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {
-                    byte value = Image[x, y].R;                             // Get the pixel color at coordinate (x,y)
-                    if (value > maximumValue)                               // Get the lowest and highest grayscale values of the picture
-                        maximumValue = value;
-                    if (value < minimumValue)
-                        minimumValue = value;
-                }
-            }
-
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {               
-                    float value = Image[x, y].R;                            // Get the pixel grayscale color at coordinate (x,y)
-                    value -= minimumValue;                                  // Calculate the pixel's "grayness" as a percent between minimum- and maximumValue
-                    value /= (maximumValue - minimumValue);
-                    int grayColor = (int)(255 * value);
-                    Image[x, y] = Color.FromArgb(grayColor, grayColor, grayColor);   // Set pixel's color to be this same percent of grayness, but then between 0 and 255
-                    progressBar.PerformStep();                              // Increment progress bar
-                }
-            }
-        }
-
-        private void LinearFilter()
-        {
-            int kernalsize;
-
+            int rounds;
             try
             {
-                kernalsize = int.Parse(textBox1.Text);
+                rounds = int.Parse(textBox1.Text);
             }
             catch
             {
                 return;
             }
 
-            Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
-            for (int x = 0; x < InputImage.Size.Width; x++)
+            for (int Nr = 0; Nr < rounds; Nr++)
             {
-                for (int y = 0; y < InputImage.Size.Height; y++)
+                Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
+                for (int x = 0; x < InputImage.Size.Width; x++)
                 {
-                    OriginalImage[x, y] = Image[x, y];
-                }
-            }
-
-            int totalsize = (2 * kernalsize + 1) * (2 * kernalsize + 1);
-
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {
-                    int totalvalue = 0;
-                    for (int i = 0 - kernalsize; i <= kernalsize; i++)               // Loop over all pixels in the kernal and add their value to total value
+                    for (int y = 0; y < InputImage.Size.Height; y++)
                     {
-                        for (int j = 0 - kernalsize; j <= kernalsize; j++)
-                        {
-                            if (x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height)        // If a pixel is out of image bounds, it has value 0
-                                totalvalue += OriginalImage[x + i, y + j].R;
-                        }
+                        OriginalImage[x, y] = Image[x, y];
                     }
-
-                    totalvalue /= totalsize;
-                    Image[x, y] = Color.FromArgb(totalvalue, totalvalue, totalvalue);
-                    progressBar.PerformStep();
                 }
-            }
-        }
 
-        private void NonlinearFilter()
-        {
-            int medianSize;
-
-            try
-            {
-                medianSize = int.Parse(textBox1.Text);
-            }
-            catch
-            {
-                return;
-            }
-
-            Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
+                for (int x = 0; x < InputImage.Size.Width; x++)
                 {
-                    OriginalImage[x, y] = Image[x, y];
-                }
-            }
-
-            float[] pixelValues = new float[(int)Math.Pow(medianSize * 2 + 1, 2)];
-
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {                   
-                    float value = Image[x, y].R;                            // Get the pixel color at coordinate (x,y)
-                    int counter = 0;
-                    for (int i = -medianSize; i <= medianSize; i++)         // Get color values for all pixels in median range
+                    for (int y = 0; y < InputImage.Size.Height; y++)
                     {
-                        for (int j = -medianSize; j <= medianSize; j++)
+                        int minColor = 0;
+                        for (int i = -1; i <= 1; i++)
                         {
-                            if (x + i >= 0 && x + i < InputImage.Size.Width && y + j >= 0 && y + j < InputImage.Size.Height)
+                            for (int j = -1; j <= 1; j++)
                             {
-                                pixelValues[counter] = (OriginalImage[x + i, y + j].R);
-                                counter++;
+                                if (H[i + 1, j + 1] && x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height)
+                                    minColor = Math.Max(minColor, OriginalImage[x + i, y + j].R);
                             }
                         }
+                        Image[x, y] = Color.FromArgb(minColor, minColor, minColor);         // Set the new pixel color at coordinate (x,y)
+                        if (y % rounds == 0)
+                            progressBar.PerformStep();                              // Increment progress bar
                     }
-
-                    Array.Sort(pixelValues);
-                    int newValue = (int)pixelValues[pixelValues.Length / 2 + 1];
-                    Image[x, y] = Color.FromArgb(newValue, newValue, newValue);     // Set the new pixel color at coordinate (x,y)
-                    progressBar.PerformStep();                              // Increment progress bar
                 }
             }
         }
 
-        private void GaussianFilter()
+        private void Dialation()
         {
-            double euler = Math.E;
-            float sigma;
-            int kernelSize;
 
-            try
-            {
-                sigma = float.Parse(textBox1.Text);                         // Try to get the sigma by parsing
-                kernelSize = int.Parse(textBox2.Text);                      // Try to get the kernelsize by parsing
-            }
-            catch
-            {
-                return;
-            }
-            if (sigma < 0 || kernelSize < 0)
-                return;
-
-            double[,] weightskernel = new double[kernelSize * 2 + 1, kernelSize * 2 + 1];
-            double total = 0;
-
-            for (int i = -kernelSize; i <= kernelSize; i++)                 // Calculate initial weight for each cell in the kernel
-            {
-                for (int j = -kernelSize; j <= kernelSize; j++)
-                {
-                    double value = Math.Pow(euler, -(i * i + j * j) / (2 * sigma * sigma));
-                    weightskernel[i + kernelSize, j + kernelSize] = value;
-                    total += value;
-                }
-            }
-
-            Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {
-                    OriginalImage[x, y] = Image[x, y];
-                }
-            }
-
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {
-                    double newGray = 0;
-                    for (int i = -kernelSize; i <= kernelSize; i++)
-                    {
-                        for (int j = -kernelSize; j <= kernelSize; j++)
-                        {
-                            if (x + i >= 0 && x + i < InputImage.Size.Width && y + j >= 0 && y + j < InputImage.Size.Height)
-                                newGray += (weightskernel[i + kernelSize, j + kernelSize] / total) * OriginalImage[x + i, y + j].R;       // Add the pixels fraction of its color to the new color of Image[x,y]
-                        }
-                    }
-                    Image[x, y] = Color.FromArgb((int)newGray, (int)newGray, (int)newGray);     // Update pixel in image
-                    progressBar.PerformStep();                              // Increment progress bar
-                }
-            }
         }
 
-        private void EdgeDetection()
+        private bool[,] GetH()
         {
-            double normalisationFactor;
-            double[,] edgeFilterX = GetEDFilter(comboBox2.Text + "x");
-            double[,] edgeFilterY = GetEDFilter(comboBox2.Text + "y");
-
-            switch (comboBox2.Text)
-            {
-                case ("Prewitt"):
-                    normalisationFactor = 1f / 6f;
-                    break;
-                case ("Sobel"):
-                    normalisationFactor = 1f / 8f;
-                    break;
-                default:
-                    normalisationFactor = 0f;
-                    break;
-            }
-
-            Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {
-                    OriginalImage[x, y] = Image[x, y];
-                }
-            }
-
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {
-                    double totalX = 0, totalY = 0;
-                    for (int i = -1; i <= 1; i++)
-                    {
-                        for (int j = -1; j <= 1; j++)
-                        {
-                            if (x + i >= 0 && x + i < InputImage.Size.Width && y + j >= 0 && y + j < InputImage.Size.Height)
-                            {
-                                totalX += OriginalImage[x + i, y + j].R * edgeFilterX[i + 1, j + 1];
-                                totalY += OriginalImage[x + i, y + j].R * edgeFilterY[i + 1, j + 1];
-                            }
-                            // If the selected pixel is out of bounds, count that pixel value as 0, which does nothing
-                        }
-                    }
-                    totalX *= normalisationFactor;
-                    totalY *= normalisationFactor;
-                    double EdgeStrength = Math.Sqrt(totalX * totalX + totalY * totalY);
-                    Image[x, y] = Color.FromArgb((int)EdgeStrength, (int)EdgeStrength, (int)EdgeStrength);
-                    progressBar.PerformStep();                              // Increment progress bar
-                }
-            }
-        }
-
-        private void Thresholding()
-        {
-            int threshold;
-            try
-            {
-                threshold = int.Parse(textBox1.Text);                       // Try to get the threshold by parsing
-            }
-            catch
-            {
-                return;
-            }
-
-            threshold = Math.Max(0, Math.Min(255, threshold));              // Clamp threshold between 0 and 255              
-
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {
-                    Color pixelColor = Image[x, y];                         // Get the pixel color at coordinate (x,y)
-                    if (pixelColor.R > threshold)                           // Set color to black if grayscale (thus either R, G or B) is above threshold, else make the color white
-                        Image[x, y] = Color.White;
-                    else
-                        Image[x, y] = Color.Black;
-                    progressBar.PerformStep();                              // Increment progress bar
-                }
-            }
-        }
-
-        private double[,] GetEDFilter(string filterName)
-        {
-            switch (filterName)
-            {
-                case ("Prewittx"):
-                    return new double[,]
-                    {
-                        { -1, 0, 1 },
-                        { -1, 0, 1 },
-                        { -1, 0, 1 }
-                    };
-                case ("Sobelx"):
-                    return new double[,]
-                    {
-                        { -1, 0, 1 },
-                        { -2, 0, 2 },
-                        { -1, 0, 1 }
-                    };
-                case ("Prewitty"):
-                    return new double[,]
-                    {
-                        { -1, -1, -1 },
-                        { 0, 0, 0 },
-                        { 1, 1, 1 }
-                    };
-                case ("Sobely"):
-                    return new double[,]
-                    {
-                        { -1, -2, -1 },
-                        { 0, 0, 0 },
-                        { 1, 2, 1 }
-                    };
-                default:
-                    return new double[,]
-                    {
-                        { 0, 0, 0 },
-                        { 0, 0, 0 },
-                        { 0, 0, 0 }
-                    };
-            }
+            bool[,] H = new bool[3, 3];
+            H[0, 0] = checkBox1.Checked;
+            H[1, 0] = checkBox2.Checked;
+            H[2, 0] = checkBox3.Checked;
+            H[0, 1] = checkBox4.Checked;
+            H[1, 1] = checkBox5.Checked;
+            H[2, 1] = checkBox6.Checked;
+            H[0, 2] = checkBox7.Checked;
+            H[1, 2] = checkBox8.Checked;
+            H[2, 2] = checkBox9.Checked;
+            return H;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
@@ -460,6 +171,7 @@ namespace INFOIBV
                 OutputImage.Save(saveImageDialog.FileName);                 // Save the output image
         }
 
+        // Copies right image to the left panel
         private void button1_Click(object sender, EventArgs e)
         {
             if (OutputImage == null) return;                                // Get out if no output image
