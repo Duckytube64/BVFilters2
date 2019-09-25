@@ -131,6 +131,9 @@ namespace INFOIBV
                 case ("Or"):
                     Or();
                     break;
+                case ("Boundary trace"):
+                    BoundaryTrace();
+                    break;
                 case ("Nothing"):
                 default:
                     break;
@@ -255,6 +258,38 @@ namespace INFOIBV
                             Image[x, y] = Color.FromArgb(255, 255, 255);
                     }
                 }
+        }
+
+        private void BoundaryTrace()
+        {
+            Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
+            for (int x = 0; x < InputImage.Size.Width; x++)
+            {
+                for (int y = 0; y < InputImage.Size.Height; y++)
+                {
+                    OriginalImage[x, y] = Image[x, y];
+                }
+            }
+
+            for (int x = 0; x < InputImage.Size.Width; x++)
+            {
+                for (int y = 0; y < InputImage.Size.Height; y++)
+                {
+                    if (OriginalImage[x, y].R == 0)
+                    {
+                        if (x > 0 && OriginalImage[x - 1, y].R == 255)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                        else if (x < InputImage.Size.Width - 1 && OriginalImage[x + 1, y].R == 255)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                        else if (y > 0 && OriginalImage[x, y - 1].R == 255)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                        else if (y < InputImage.Size.Height - 1 && OriginalImage[x, y + 1].R == 255)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                        else                        
+                            Image[x, y] = Color.FromArgb(255, 255, 255);                        
+                    }
+                }
+            }
         }
 
         private bool[,] GetH()

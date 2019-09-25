@@ -135,7 +135,8 @@
             "Closing",
             "Complement",
             "And",
-            "Or"});
+            "Or",
+            "Boundary trace"});
             this.comboBox1.Location = new System.Drawing.Point(881, 15);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(2);
             this.comboBox1.Name = "comboBox1";
