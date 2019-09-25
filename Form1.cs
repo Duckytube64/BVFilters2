@@ -43,7 +43,7 @@ namespace INFOIBV
 
         private void LoadImageButton2_Click_1(object sender, EventArgs e)
         {
-                        if (openImageDialog.ShowDialog() == DialogResult.OK)             // Open File Dialog
+            if (openImageDialog.ShowDialog() == DialogResult.OK)             // Open File Dialog
             {
                 string file = openImageDialog.FileName;                     // Get the file name
                 imageFileName.Text = file;                                  // Show file name

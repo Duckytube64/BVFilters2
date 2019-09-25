@@ -49,10 +49,9 @@
             // 
             // LoadImageButton
             // 
-            this.LoadImageButton.Location = new System.Drawing.Point(16, 15);
-            this.LoadImageButton.Margin = new System.Windows.Forms.Padding(4);
+            this.LoadImageButton.Location = new System.Drawing.Point(12, 12);
             this.LoadImageButton.Name = "LoadImageButton";
-            this.LoadImageButton.Size = new System.Drawing.Size(116, 28);
+            this.LoadImageButton.Size = new System.Drawing.Size(103, 23);
             this.LoadImageButton.TabIndex = 0;
             this.LoadImageButton.Text = "Load image...";
             this.LoadImageButton.UseVisualStyleBackColor = true;
@@ -66,29 +65,26 @@
             // 
             // imageFileName
             // 
-            this.imageFileName.Location = new System.Drawing.Point(264, 19);
-            this.imageFileName.Margin = new System.Windows.Forms.Padding(4);
+            this.imageFileName.Location = new System.Drawing.Point(225, 14);
             this.imageFileName.Name = "imageFileName";
             this.imageFileName.ReadOnly = true;
-            this.imageFileName.Size = new System.Drawing.Size(275, 22);
+            this.imageFileName.Size = new System.Drawing.Size(180, 20);
             this.imageFileName.TabIndex = 1;
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(17, 55);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBox1.Location = new System.Drawing.Point(13, 45);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(683, 630);
+            this.pictureBox1.Size = new System.Drawing.Size(512, 512);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
             // 
             // applyButton
             // 
-            this.applyButton.Location = new System.Drawing.Point(563, 16);
-            this.applyButton.Margin = new System.Windows.Forms.Padding(4);
+            this.applyButton.Location = new System.Drawing.Point(422, 13);
             this.applyButton.Name = "applyButton";
-            this.applyButton.Size = new System.Drawing.Size(137, 28);
+            this.applyButton.Size = new System.Drawing.Size(103, 23);
             this.applyButton.TabIndex = 3;
             this.applyButton.Text = "Apply";
             this.applyButton.UseVisualStyleBackColor = true;
@@ -101,10 +97,9 @@
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(1276, 0);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(4);
+            this.saveButton.Location = new System.Drawing.Point(957, 0);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(127, 28);
+            this.saveButton.Size = new System.Drawing.Size(95, 23);
             this.saveButton.TabIndex = 4;
             this.saveButton.Text = "Save as BMP...";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -112,20 +107,18 @@
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(708, 55);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBox2.Location = new System.Drawing.Point(531, 45);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(683, 630);
+            this.pictureBox2.Size = new System.Drawing.Size(512, 512);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBox2.TabIndex = 5;
             this.pictureBox2.TabStop = false;
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(708, 18);
-            this.progressBar.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBar.Location = new System.Drawing.Point(531, 15);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(233, 25);
+            this.progressBar.Size = new System.Drawing.Size(175, 20);
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar.TabIndex = 6;
             this.progressBar.Visible = false;
@@ -143,38 +136,37 @@
             "Complement",
             "And",
             "Or"});
-            this.comboBox1.Location = new System.Drawing.Point(1175, 18);
+            this.comboBox1.Location = new System.Drawing.Point(881, 15);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(2);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(95, 24);
+            this.comboBox1.Size = new System.Drawing.Size(72, 21);
             this.comboBox1.TabIndex = 7;
             this.comboBox1.Text = "Nothing";
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(1093, 19);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox1.Location = new System.Drawing.Point(820, 15);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(2);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(77, 22);
+            this.textBox1.Size = new System.Drawing.Size(59, 20);
             this.textBox1.TabIndex = 9;
             this.textBox1.Visible = false;
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(1010, 19);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox2.Location = new System.Drawing.Point(758, 15);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(2);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(77, 22);
+            this.textBox2.Size = new System.Drawing.Size(59, 20);
             this.textBox2.TabIndex = 10;
             this.textBox2.Visible = false;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1292, 27);
-            this.button1.Margin = new System.Windows.Forms.Padding(4);
+            this.button1.Location = new System.Drawing.Point(969, 22);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 28);
+            this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 11;
             this.button1.Text = "copy";
             this.button1.UseVisualStyleBackColor = true;
@@ -187,19 +179,19 @@
             "Nothing",
             "Plus",
             "Rectangle"});
-            this.comboBox2.Location = new System.Drawing.Point(1093, 18);
+            this.comboBox2.Location = new System.Drawing.Point(820, 15);
+            this.comboBox2.Margin = new System.Windows.Forms.Padding(2);
             this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(77, 24);
+            this.comboBox2.Size = new System.Drawing.Size(59, 21);
             this.comboBox2.TabIndex = 12;
             this.comboBox2.Text = "Nothing";
             this.comboBox2.Visible = false;
             // 
             // LoadImageButton2
             // 
-            this.LoadImageButton2.Location = new System.Drawing.Point(140, 15);
-            this.LoadImageButton2.Margin = new System.Windows.Forms.Padding(4);
+            this.LoadImageButton2.Location = new System.Drawing.Point(121, 12);
             this.LoadImageButton2.Name = "LoadImageButton2";
-            this.LoadImageButton2.Size = new System.Drawing.Size(116, 28);
+            this.LoadImageButton2.Size = new System.Drawing.Size(98, 23);
             this.LoadImageButton2.TabIndex = 13;
             this.LoadImageButton2.Text = "Load image 2...";
             this.LoadImageButton2.UseVisualStyleBackColor = true;
@@ -207,9 +199,9 @@
             // 
             // INFOIBV
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1403, 709);
+            this.ClientSize = new System.Drawing.Size(1052, 576);
             this.Controls.Add(this.LoadImageButton2);
             this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.button1);
@@ -224,7 +216,6 @@
             this.Controls.Add(this.LoadImageButton);
             this.Controls.Add(this.textBox1);
             this.Location = new System.Drawing.Point(10, 10);
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "INFOIBV";
             this.ShowIcon = false;
             this.Text = "INFOIBV";
