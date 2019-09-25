@@ -298,7 +298,7 @@ namespace INFOIBV
             int size;
             try
             {
-                size = int.Parse(modeSize);
+                size = int.Parse(modeSize);                     // Try to get the inputted size - if it's a number
                 H = new bool[size * 2 - 1, size * 2 - 1];
             }
             catch
