@@ -41,9 +41,9 @@ namespace INFOIBV
             }
         }
 
-        private void LoadImageButton2_Click(object sender, EventArgs e)
+        private void LoadImageButton2_Click_1(object sender, EventArgs e)
         {
-            if (openImageDialog.ShowDialog() == DialogResult.OK)             // Open File Dialog
+                        if (openImageDialog.ShowDialog() == DialogResult.OK)             // Open File Dialog
             {
                 string file = openImageDialog.FileName;                     // Get the file name
                 imageFileName.Text = file;                                  // Show file name
@@ -99,7 +99,11 @@ namespace INFOIBV
             string filter = (string)comboBox1.SelectedItem;
 
             switch (filter)
-            {                
+            {
+                case ("Structuring element"):
+                    mode = comboBox2.Text;
+                    modeSize = textBox2.Text;
+                    break;
                 case ("Erosion"):
                     ErosionOrDialation(true);
                     break;
