@@ -16,6 +16,7 @@ namespace INFOIBV
         private Bitmap OutputImage;
         Color[,] Image;
         bool doubleProgress = false;
+        string modeSize, mode;
 
         public INFOIBV()
         {
@@ -73,7 +74,11 @@ namespace INFOIBV
             string filter = (string)comboBox1.SelectedItem;
 
             switch (filter)
-            {                
+            {
+                case ("Structuring element"):
+                    modeSize = textBox2.Text;
+                    mode = comboBox2.Text;
+                    break;
                 case ("Erosion"):
                     ErosionOrDialation(true);
                     break;
@@ -120,6 +125,7 @@ namespace INFOIBV
         private void ErosionOrDialation(bool IsErosion)
         {
             bool[,] H = GetH();
+            int size = H.GetLength(0) / 2;
             int baseMinColor;
             int rounds;
             try
@@ -152,11 +158,11 @@ namespace INFOIBV
                     for (int y = 0; y < InputImage.Size.Height; y++)
                     {
                         int minColor = baseMinColor;
-                        for (int i = -1; i <= 1; i++)
+                        for (int i = -size; i < size; i++)
                         {
-                            for (int j = -1; j <= 1; j++)
+                            for (int j = -size; j < size; j++)
                             {
-                                if (H[i + 1, j + 1] && x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height)
+                                if (H[i + size, j + size] && x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height)
                                 {
                                     if (IsErosion)
                                         minColor = Math.Min(minColor, OriginalImage[x + i, y + j].R);
@@ -211,15 +217,32 @@ namespace INFOIBV
         private bool[,] GetH()
         {
             bool[,] H = new bool[3, 3];
-            H[0, 0] = checkBox1.Checked;
-            H[1, 0] = checkBox2.Checked;
-            H[2, 0] = checkBox3.Checked;
-            H[0, 1] = checkBox4.Checked;
-            H[1, 1] = checkBox5.Checked;
-            H[2, 1] = checkBox6.Checked;
-            H[0, 2] = checkBox7.Checked;
-            H[1, 2] = checkBox8.Checked;
-            H[2, 2] = checkBox9.Checked;
+            int size;
+            try
+            {
+                size = int.Parse(modeSize);
+                H = new bool[size * 2 - 1, size * 2 - 1];
+            }
+            catch
+            {
+                return H;
+            }
+
+            for (int i = 0; i < size * 2 - 1; i++)
+            {
+                for (int j = 0; j < size * 2 - 1; j++)
+                {
+                    if (mode == "Plus")
+                    {
+                        if (i == H.GetLength(0) / 2 || j == H.GetLength(1) / 2)
+                            H[i, j] = true;
+                    }
+                    else if (mode == "Rectangle")
+                    {
+                        H[i, j] = true;
+                    }
+                }
+            }            
             return H;
         }
 

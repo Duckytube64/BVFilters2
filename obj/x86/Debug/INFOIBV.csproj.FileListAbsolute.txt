@@ -50,3 +50,12 @@ C:\Users\Steven\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.INFOIBV.resources
 C:\Users\Steven\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.Properties.Resources.resources
 C:\Users\Steven\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.csproj.GenerateResource.Cache
 C:\Users\Steven\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.csprojResolveAssemblyReference.cache
+C:\Users\Jeroen\Source\Repos\BVFilters2\bin\Debug\INFOIBV.exe
+C:\Users\Jeroen\Source\Repos\BVFilters2\bin\Debug\INFOIBV.pdb
+C:\Users\Jeroen\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.csprojAssemblyReference.cache
+C:\Users\Jeroen\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.INFOIBV.resources
+C:\Users\Jeroen\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.Properties.Resources.resources
+C:\Users\Jeroen\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.csproj.GenerateResource.cache
+C:\Users\Jeroen\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.csproj.CoreCompileInputs.cache
+C:\Users\Jeroen\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.exe
+C:\Users\Jeroen\Source\Repos\BVFilters2\obj\x86\Debug\INFOIBV.pdb
