@@ -13,8 +13,10 @@ namespace INFOIBV
     public partial class INFOIBV : Form
     {
         private Bitmap InputImage;
+        private Bitmap InputImage2;
         private Bitmap OutputImage;
         Color[,] Image;
+        Color[,] Image2;
         bool doubleProgress = false;
         string modeSize, mode;
 
@@ -39,6 +41,20 @@ namespace INFOIBV
             }
         }
 
+        private void LoadImageButton2_Click(object sender, EventArgs e)
+        {
+            if (openImageDialog.ShowDialog() == DialogResult.OK)             // Open File Dialog
+            {
+                string file = openImageDialog.FileName;                     // Get the file name
+                imageFileName.Text = file;                                  // Show file name
+                if (InputImage2 != null) InputImage2.Dispose();               // Reset image
+                InputImage2 = new Bitmap(file);                              // Create new Bitmap from file
+                if (InputImage2.Size.Height <= 0 || InputImage2.Size.Width <= 0 ||
+                    InputImage2.Size.Height > 512 || InputImage2.Size.Width > 512) // Dimension check
+                    MessageBox.Show("Error in image dimensions (have to be > 0 and <= 512)");
+            }
+        }
+
         //This project was made by:
         //Steven van Blijderveen	5553083
         //Jeroen Hijzelendoorn		6262279
@@ -46,10 +62,17 @@ namespace INFOIBV
 
         private void applyButton_Click(object sender, EventArgs e)
         {
+            bool image2Used = false;
             if (InputImage == null) return;                                 // Get out if no input image
             if (OutputImage != null) OutputImage.Dispose();                 // Reset output image
             OutputImage = new Bitmap(InputImage.Size.Width, InputImage.Size.Height); // Create new output image
             Image = new Color[InputImage.Size.Width, InputImage.Size.Height];       // Create array to speed-up operations (Bitmap functions are very slow)
+            if (InputImage2 != null)
+            {
+                Image2 = new Color[InputImage2.Size.Width, InputImage2.Size.Height];
+                image2Used = true;
+            }
+
 
             // Setup progress bar
             progressBar.Visible = true;
@@ -64,6 +87,8 @@ namespace INFOIBV
                 for (int y = 0; y < InputImage.Size.Height; y++)
                 {
                     Image[x, y] = InputImage.GetPixel(x, y);                // Set pixel color in array at (x,y)
+                    if (image2Used)
+                        Image2[x, y] = InputImage2.GetPixel(x, y);
                 }
             }
 
@@ -74,11 +99,7 @@ namespace INFOIBV
             string filter = (string)comboBox1.SelectedItem;
 
             switch (filter)
-            {
-                case ("Structuring element"):
-                    modeSize = textBox2.Text;
-                    mode = comboBox2.Text;
-                    break;
+            {                
                 case ("Erosion"):
                     ErosionOrDialation(true);
                     break;
@@ -100,9 +121,12 @@ namespace INFOIBV
                 case ("Complement"):
                     Complement();
                     break;
-            /*    case ("And"):
+                case ("And"):
                     And();
-                    break;    */
+                    break;
+                case ("Or"):
+                    Or();
+                    break;
                 case ("Nothing"):
                 default:
                     break;
@@ -120,7 +144,7 @@ namespace INFOIBV
 
             pictureBox2.Image = (Image)OutputImage;                         // Display output image
             progressBar.Visible = false;                                    // Hide progress bar
-        }       
+        }        
 
         private void ErosionOrDialation(bool IsErosion)
         {
@@ -182,7 +206,7 @@ namespace INFOIBV
                     }
                 }
             }
-        }
+        }    
 
         private void Complement()
         {
@@ -198,21 +222,36 @@ namespace INFOIBV
             }
         }
 
-       /* private void And()
+
+        private void And()
         {
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
+            if(InputImage.Size == InputImage2.Size)
+                for (int x = 0; x < InputImage.Size.Width; x++)
                 {
-                    if (Image[x, y] == Image2.GetPixel(x, y))       // Nog een manier maken om een tweede Image te laden
-                        Image[x, y] = Image[x, y];
-                    else
-                        Image[x, y] = Color.White;
+                    for (int y = 0; y < InputImage.Size.Height; y++)
+                    {
+                        if (Image[x, y].R == 0 && Image2[x, y].R == 0)
+                            Image[x, y] = Color.FromArgb(0,0,0);
+                        else
+                            Image[x, y] = Color.FromArgb(255,255,255);
+                    }
                 }
-            }
         }
 
-    */
+        private void Or()
+        {
+            if (InputImage.Size == InputImage2.Size)
+                for (int x = 0; x < InputImage.Size.Width; x++)
+                {
+                    for (int y = 0; y < InputImage.Size.Height; y++)
+                    {
+                        if (Image[x, y].R == 0 || Image2[x, y].R == 0)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                        else
+                            Image[x, y] = Color.FromArgb(255, 255, 255);
+                    }
+                }
+        }
 
         private bool[,] GetH()
         {
