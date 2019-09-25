@@ -50,6 +50,7 @@
             this.checkBox7 = new System.Windows.Forms.CheckBox();
             this.checkBox8 = new System.Windows.Forms.CheckBox();
             this.checkBox9 = new System.Windows.Forms.CheckBox();
+            this.LoadImageButton2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -72,10 +73,10 @@
             // 
             // imageFileName
             // 
-            this.imageFileName.Location = new System.Drawing.Point(116, 14);
+            this.imageFileName.Location = new System.Drawing.Point(238, 14);
             this.imageFileName.Name = "imageFileName";
             this.imageFileName.ReadOnly = true;
-            this.imageFileName.Size = new System.Drawing.Size(207, 20);
+            this.imageFileName.Size = new System.Drawing.Size(177, 20);
             this.imageFileName.TabIndex = 1;
             // 
             // pictureBox1
@@ -140,7 +141,8 @@
             "Opening",
             "Closing",
             "Complement",
-            "And"});
+            "And",
+            "Or"});
             this.comboBox1.Location = new System.Drawing.Point(841, 14);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(2);
             this.comboBox1.Name = "comboBox1";
@@ -267,11 +269,22 @@
             this.checkBox9.UseVisualStyleBackColor = true;
             this.checkBox9.Visible = false;
             // 
+            // LoadImageButton2
+            // 
+            this.LoadImageButton2.Location = new System.Drawing.Point(116, 12);
+            this.LoadImageButton2.Name = "LoadImageButton2";
+            this.LoadImageButton2.Size = new System.Drawing.Size(98, 23);
+            this.LoadImageButton2.TabIndex = 21;
+            this.LoadImageButton2.Text = "Load image 2...";
+            this.LoadImageButton2.UseVisualStyleBackColor = true;
+            this.LoadImageButton2.Click += new System.EventHandler(this.LoadImageButton2_Click);
+            // 
             // INFOIBV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1052, 576);
+            this.Controls.Add(this.LoadImageButton2);
             this.Controls.Add(this.checkBox9);
             this.Controls.Add(this.checkBox8);
             this.Controls.Add(this.checkBox7);
@@ -370,6 +383,7 @@
         private System.Windows.Forms.CheckBox checkBox7;
         private System.Windows.Forms.CheckBox checkBox8;
         private System.Windows.Forms.CheckBox checkBox9;
+        private System.Windows.Forms.Button LoadImageButton2;
     }
 }
 
