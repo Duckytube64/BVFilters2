@@ -28,6 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.LoadImageButton = new System.Windows.Forms.Button();
             this.openImageDialog = new System.Windows.Forms.OpenFileDialog();
             this.imageFileName = new System.Windows.Forms.TextBox();
@@ -43,8 +46,11 @@
             this.button1 = new System.Windows.Forms.Button();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.LoadImageButton2 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
             // LoadImageButton
@@ -199,11 +205,38 @@
             this.LoadImageButton2.UseVisualStyleBackColor = true;
             this.LoadImageButton2.Click += new System.EventHandler(this.LoadImageButton2_Click_1);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(797, 560);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(134, 13);
+            this.label1.TabIndex = 14;
+            this.label1.Text = "Aantal values berekenen...";
+            this.label1.Visible = false;
+            // 
+            // chart1
+            // 
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart1.Legends.Add(legend1);
+            this.chart1.Location = new System.Drawing.Point(539, 53);
+            this.chart1.Name = "Value Counting";
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            this.chart1.Size = new System.Drawing.Size(501, 504);
+            this.chart1.TabIndex = 15;
+            this.chart1.Text = "chart1";
+            this.chart1.Visible = false;
+            // 
             // INFOIBV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1052, 576);
+            this.Controls.Add(this.chart1);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.LoadImageButton2);
             this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.button1);
@@ -223,6 +256,7 @@
             this.Text = "INFOIBV";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -234,6 +268,8 @@
             this.textBox1.Visible = false;
             this.textBox2.Visible = false;
             this.comboBox2.Visible = false;
+            this.label1.Visible = false;
+            this.chart1.Visible = false;
 
             string selected = (string)cb.SelectedItem;
 
@@ -247,6 +283,11 @@
                 this.textBox2.Visible = true;
                 this.textBox2.Text = "radius";
                 this.comboBox2.Visible = true;
+            }
+            else if (selected == "Value counting")
+            {
+                this.label1.Visible = true;
+                this.chart1.Visible = true;
             }
         }
         #endregion
@@ -266,5 +307,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.Button LoadImageButton2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
     }
 }

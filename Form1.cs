@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using System.IO;
 
 namespace INFOIBV
@@ -297,6 +298,8 @@ namespace INFOIBV
 
         private void ValueCounting()
         {
+            chart1.Series.Clear();
+            chart1.ResetAutoValues();
             int[] values = new int[256];
             int valuecounter = 0;
             for (int x = 0; x < InputImage.Size.Width; x++)
@@ -305,10 +308,20 @@ namespace INFOIBV
                  {
                     int value = Image[x, y].R;
                     if(values[value] == 0)
+                    {
                         valuecounter++;
+                    }
                     values[value]++;
                  }
             }
+
+            var values1 = chart1.Series.Add("Values");
+            for (int i = 0; i < 256; i++)
+            {
+                values1.Points.AddY(values[i]);
+            }
+
+            this.label1.Text = "Aantal values: " + valuecounter;
         }
 
         private bool[,] GetH()
