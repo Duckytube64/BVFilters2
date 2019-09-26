@@ -131,6 +131,9 @@ namespace INFOIBV
                 case ("Or"):
                     Or();
                     break;
+                case ("Value counting"):
+                    ValueCounting();
+                    break;
                 case ("Boundary trace"):
                     BoundaryTrace();
                     break;
@@ -169,9 +172,9 @@ namespace INFOIBV
             }
 
             if (IsErosion)
-                baseMinColor = 255;
-            else
                 baseMinColor = 0;
+            else
+                baseMinColor = 255;
 
             for (int Nr = 0; Nr < rounds; Nr++)
             {
@@ -196,9 +199,9 @@ namespace INFOIBV
                                 if (H[i + size, j + size] && x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height)
                                 {
                                     if (IsErosion)
-                                        minColor = Math.Min(minColor, OriginalImage[x + i, y + j].R);
-                                    else
                                         minColor = Math.Max(minColor, OriginalImage[x + i, y + j].R);
+                                    else
+                                        minColor = Math.Min(minColor, OriginalImage[x + i, y + j].R);
                                 }
                             }
                         }
@@ -289,6 +292,22 @@ namespace INFOIBV
                             Image[x, y] = Color.FromArgb(255, 255, 255);                        
                     }
                 }
+            }
+        }
+
+        private void ValueCounting()
+        {
+            int[] values = new int[256];
+            int valuecounter = 0;
+            for (int x = 0; x < InputImage.Size.Width; x++)
+             {
+                 for (int y = 0; y < InputImage.Size.Height; y++)
+                 {
+                    int value = Image[x, y].R;
+                    if(values[value] == 0)
+                        valuecounter++;
+                    values[value]++;
+                 }
             }
         }
 
