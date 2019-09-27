@@ -71,6 +71,26 @@ namespace INFOIBV
                 mode = comboBox2.Text;
                 modeSize = textBox2.Text;
                 SetH();
+
+                string message = "Structuring element set as: \n";
+                int size = int.Parse(modeSize);
+                for (int x = 0; x < size * 2 - 1; x++)
+                {
+                    for (int y = 0; y < size * 2 - 1; y++)
+                    {
+                        if (H[x, y])
+                        {
+                            message += "1 ";
+                        }
+                        else
+                        {
+                            message += "0 ";
+                        }
+                    }
+                    message += "\n";
+                }
+
+                MessageBox.Show(message, "Structuring element visual", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             bool image2Used = false;
@@ -365,6 +385,33 @@ namespace INFOIBV
                     progressBar.PerformStep();                              // Increment progress bar
                 }
             }
+
+            string message = "The following coordinates are boundarypixels: \n";
+            int counter = 0;
+
+            for (int x = 0; x < InputImage.Size.Width; x++)
+            {
+                for (int y = 0; y < InputImage.Size.Height; y++)
+                {
+                    if (boundaryTraceCooridinates[x, y])
+                    {
+                        message += "(" + x + ", " + y + ")     ";
+                        counter++;
+                    }
+                    if (counter == 4)
+                    {
+                        message += "\n";
+                        counter = 0;
+                    }
+                }
+            }
+            
+            string header = "List of boundarypixels";
+            MessageBoxButtons buttons = MessageBoxButtons.OK;
+            DialogResult result;
+
+            result = MessageBox.Show(message, header, buttons, MessageBoxIcon.Information);
+
         }
 
         private void SetH()
