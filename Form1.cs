@@ -20,6 +20,8 @@ namespace INFOIBV
         Color[,] Image2;
         bool doubleProgress = false;
         string modeSize, mode;
+        bool[,] boundaryTraceCooridinates;
+        bool[,] H;
 
         public INFOIBV()
         {
@@ -68,6 +70,7 @@ namespace INFOIBV
             {
                 mode = comboBox2.Text;
                 modeSize = textBox2.Text;
+                SetH();
             }
 
             bool image2Used = false;
@@ -160,7 +163,6 @@ namespace INFOIBV
 
         private void ErosionOrDialation(bool IsErosion)
         {
-            bool[,] H = GetH();
             int size = H.GetLength(0) / 2;
             int baseMinColor;
             int rounds;
@@ -301,6 +303,8 @@ namespace INFOIBV
             // For the BoundaryTrace we chose an 8-neighbourhood to determine if a pixel is a boundary
             // This way curved boundaries are a stronger black, as they will be a bit thicker
             Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
+            boundaryTraceCooridinates = new bool[InputImage.Size.Width, InputImage.Size.Height]; // Initialize boolian array to keep track of boundary pixels
+
             for (int x = 0; x < InputImage.Size.Width; x++)
             {
                 for (int y = 0; y < InputImage.Size.Height; y++)
@@ -316,21 +320,31 @@ namespace INFOIBV
                     if (OriginalImage[x, y].R == 0)
                     {
                         if (x > 0 && y > 0 && OriginalImage[x - 1, y - 1].R == 255)
-                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            {
+                                Image[x, y] = Color.FromArgb(0, 0, 0);
+                                boundaryTraceCooridinates[x,y] = true;
+                            }
                         else if (x > 0 && OriginalImage[x - 1, y].R == 255)
-                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            {Image[x, y] = Color.FromArgb(0, 0, 0);
+                                                        boundaryTraceCooridinates[x,y] = true;}
                         else if (x < InputImage.Size.Width - 1 && y < InputImage.Size.Height - 1 && OriginalImage[x + 1, y + 1].R == 255)
-                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            {Image[x, y] = Color.FromArgb(0, 0, 0);
+                                                        boundaryTraceCooridinates[x,y] = true;}
                         else if (x < InputImage.Size.Width - 1 && OriginalImage[x + 1, y].R == 255)
-                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            {Image[x, y] = Color.FromArgb(0, 0, 0);
+                                                        boundaryTraceCooridinates[x,y] = true;}
                         else if (y > 0 && x < InputImage.Size.Width - 1 && OriginalImage[x + 1, y - 1].R == 255)
-                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            {Image[x, y] = Color.FromArgb(0, 0, 0);
+                                                        boundaryTraceCooridinates[x,y] = true;}
                         else if (y > 0 && OriginalImage[x, y - 1].R == 255)
-                            Image[x, y] = Color.FromArgb(0, 0, 0);                                                   
+                            {Image[x, y] = Color.FromArgb(0, 0, 0);    
+                                                        boundaryTraceCooridinates[x,y] = true;}
                         else if (y < InputImage.Size.Height - 1 && x > 0 && OriginalImage[x - 1, y + 1].R == 255)
-                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            {Image[x, y] = Color.FromArgb(0, 0, 0);
+                                                        boundaryTraceCooridinates[x,y] = true;}
                         else if (y < InputImage.Size.Height - 1 && OriginalImage[x, y + 1].R == 255)
-                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            {Image[x, y] = Color.FromArgb(0, 0, 0);
+                                                        boundaryTraceCooridinates[x,y] = true;}
                         else                        
                             Image[x, y] = Color.FromArgb(255, 255, 255);                        
                     }
@@ -339,18 +353,18 @@ namespace INFOIBV
             }
         }
 
-        private bool[,] GetH()
+        private void SetH()
         {
-            bool[,] H = new bool[3, 3];
+            bool[,] newH = new bool[3, 3];
             int size;
             try
             {
                 size = int.Parse(modeSize);                     // Try to get the inputted size - if it's a number
-                H = new bool[size * 2 - 1, size * 2 - 1];
+                newH = new bool[size * 2 - 1, size * 2 - 1];
             }
             catch
             {
-                return H;
+                return;
             }
 
             for (int i = 0; i < size * 2 - 1; i++)
@@ -359,16 +373,16 @@ namespace INFOIBV
                 {
                     if (mode == "Plus")
                     {
-                        if (i == H.GetLength(0) / 2 || j == H.GetLength(1) / 2)
-                            H[i, j] = true;
+                        if (i == newH.GetLength(0) / 2 || j == newH.GetLength(1) / 2)
+                            newH[i, j] = true;
                     }
                     else if (mode == "Rectangle")
                     {
-                        H[i, j] = true;
+                        newH[i, j] = true;
                     }
                 }
             }            
-            return H;
+            H = newH;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
