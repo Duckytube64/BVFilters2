@@ -320,33 +320,47 @@ namespace INFOIBV
                     if (OriginalImage[x, y].R == 0)
                     {
                         if (x > 0 && y > 0 && OriginalImage[x - 1, y - 1].R == 255)
-                            {
-                                Image[x, y] = Color.FromArgb(0, 0, 0);
-                                boundaryTraceCooridinates[x,y] = true;
-                            }
+                        {
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            boundaryTraceCooridinates[x, y] = true;
+                        }
                         else if (x > 0 && OriginalImage[x - 1, y].R == 255)
-                            {Image[x, y] = Color.FromArgb(0, 0, 0);
-                                                        boundaryTraceCooridinates[x,y] = true;}
+                        {
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            boundaryTraceCooridinates[x, y] = true;
+                        }
                         else if (x < InputImage.Size.Width - 1 && y < InputImage.Size.Height - 1 && OriginalImage[x + 1, y + 1].R == 255)
-                            {Image[x, y] = Color.FromArgb(0, 0, 0);
-                                                        boundaryTraceCooridinates[x,y] = true;}
+                        {
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            boundaryTraceCooridinates[x, y] = true;
+                        }
                         else if (x < InputImage.Size.Width - 1 && OriginalImage[x + 1, y].R == 255)
-                            {Image[x, y] = Color.FromArgb(0, 0, 0);
-                                                        boundaryTraceCooridinates[x,y] = true;}
+                        {
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            boundaryTraceCooridinates[x, y] = true;
+                        }
                         else if (y > 0 && x < InputImage.Size.Width - 1 && OriginalImage[x + 1, y - 1].R == 255)
-                            {Image[x, y] = Color.FromArgb(0, 0, 0);
-                                                        boundaryTraceCooridinates[x,y] = true;}
+                        {
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            boundaryTraceCooridinates[x, y] = true;
+                        }
                         else if (y > 0 && OriginalImage[x, y - 1].R == 255)
-                            {Image[x, y] = Color.FromArgb(0, 0, 0);    
-                                                        boundaryTraceCooridinates[x,y] = true;}
+                        {
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            boundaryTraceCooridinates[x, y] = true;
+                        }
                         else if (y < InputImage.Size.Height - 1 && x > 0 && OriginalImage[x - 1, y + 1].R == 255)
-                            {Image[x, y] = Color.FromArgb(0, 0, 0);
-                                                        boundaryTraceCooridinates[x,y] = true;}
+                        {
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            boundaryTraceCooridinates[x, y] = true;
+                        }
                         else if (y < InputImage.Size.Height - 1 && OriginalImage[x, y + 1].R == 255)
-                            {Image[x, y] = Color.FromArgb(0, 0, 0);
-                                                        boundaryTraceCooridinates[x,y] = true;}
-                        else                        
-                            Image[x, y] = Color.FromArgb(255, 255, 255);                        
+                        {
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            boundaryTraceCooridinates[x, y] = true;
+                        }
+                        else
+                            Image[x, y] = Color.FromArgb(255, 255, 255);
                     }
                     progressBar.PerformStep();                              // Increment progress bar
                 }
