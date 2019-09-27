@@ -63,6 +63,13 @@ namespace INFOIBV
 
         private void applyButton_Click(object sender, EventArgs e)
         {
+            string filter = (string)comboBox1.SelectedItem;
+            if (filter == "Structuring element")                            // This function should also work when no image is chosen yet
+            {
+                mode = comboBox2.Text;
+                modeSize = textBox2.Text;
+            }
+
             bool image2Used = false;
             if (InputImage == null) return;                                 // Get out if no input image
             if (OutputImage != null) OutputImage.Dispose();                 // Reset output image
@@ -97,14 +104,8 @@ namespace INFOIBV
             // TODO: include here your own code
             // example: create a negative image
 
-            string filter = (string)comboBox1.SelectedItem;
-
             switch (filter)
             {
-                case ("Structuring element"):
-                    mode = comboBox2.Text;
-                    modeSize = textBox2.Text;
-                    break;
                 case ("Erosion"):
                     ErosionOrDialation(true);
                     break;
@@ -245,6 +246,7 @@ namespace INFOIBV
                             Image[x, y] = Color.FromArgb(0,0,0);
                         else
                             Image[x, y] = Color.FromArgb(255,255,255);
+                        progressBar.PerformStep();                              // Increment progress bar
                     }
                 }
         }
@@ -260,40 +262,9 @@ namespace INFOIBV
                             Image[x, y] = Color.FromArgb(0, 0, 0);
                         else
                             Image[x, y] = Color.FromArgb(255, 255, 255);
+                        progressBar.PerformStep();                              // Increment progress bar
                     }
                 }
-        }
-
-        private void BoundaryTrace()
-        {
-            Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {
-                    OriginalImage[x, y] = Image[x, y];
-                }
-            }
-
-            for (int x = 0; x < InputImage.Size.Width; x++)
-            {
-                for (int y = 0; y < InputImage.Size.Height; y++)
-                {
-                    if (OriginalImage[x, y].R == 0)
-                    {
-                        if (x > 0 && OriginalImage[x - 1, y].R == 255)
-                            Image[x, y] = Color.FromArgb(0, 0, 0);
-                        else if (x < InputImage.Size.Width - 1 && OriginalImage[x + 1, y].R == 255)
-                            Image[x, y] = Color.FromArgb(0, 0, 0);
-                        else if (y > 0 && OriginalImage[x, y - 1].R == 255)
-                            Image[x, y] = Color.FromArgb(0, 0, 0);
-                        else if (y < InputImage.Size.Height - 1 && OriginalImage[x, y + 1].R == 255)
-                            Image[x, y] = Color.FromArgb(0, 0, 0);
-                        else                        
-                            Image[x, y] = Color.FromArgb(255, 255, 255);                        
-                    }
-                }
-            }
         }
 
         private void ValueCounting()
@@ -312,6 +283,7 @@ namespace INFOIBV
                         valuecounter++;
                     }
                     values[value]++;
+                    progressBar.PerformStep();                              // Increment progress bar
                  }
             }
 
@@ -322,6 +294,49 @@ namespace INFOIBV
             }
 
             this.label1.Text = "Aantal values: " + valuecounter;
+        }
+
+        private void BoundaryTrace()
+        {
+            // For the BoundaryTrace we chose an 8-neighbourhood to determine if a pixel is a boundary
+            // This way curved boundaries are a stronger black, as they will be a bit thicker
+            Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
+            for (int x = 0; x < InputImage.Size.Width; x++)
+            {
+                for (int y = 0; y < InputImage.Size.Height; y++)
+                {
+                    OriginalImage[x, y] = Image[x, y];
+                }
+            }
+
+            for (int x = 0; x < InputImage.Size.Width; x++)
+            {
+                for (int y = 0; y < InputImage.Size.Height; y++)
+                {
+                    if (OriginalImage[x, y].R == 0)
+                    {
+                        if (x > 0 && y > 0 && OriginalImage[x - 1, y - 1].R == 255)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                        else if (x > 0 && OriginalImage[x - 1, y].R == 255)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                        else if (x < InputImage.Size.Width - 1 && y < InputImage.Size.Height - 1 && OriginalImage[x + 1, y + 1].R == 255)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                        else if (x < InputImage.Size.Width - 1 && OriginalImage[x + 1, y].R == 255)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                        else if (y > 0 && x < InputImage.Size.Width - 1 && OriginalImage[x + 1, y - 1].R == 255)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                        else if (y > 0 && OriginalImage[x, y - 1].R == 255)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);                                                   
+                        else if (y < InputImage.Size.Height - 1 && x > 0 && OriginalImage[x - 1, y + 1].R == 255)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                        else if (y < InputImage.Size.Height - 1 && OriginalImage[x, y + 1].R == 255)
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                        else                        
+                            Image[x, y] = Color.FromArgb(255, 255, 255);                        
+                    }
+                    progressBar.PerformStep();                              // Increment progress bar
+                }
+            }
         }
 
         private bool[,] GetH()
