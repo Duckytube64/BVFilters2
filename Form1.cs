@@ -112,7 +112,7 @@ namespace INFOIBV
                 case ("Erosion"):
                     ErosionOrDialation(true);
                     break;
-                case ("Dialation"):
+                case ("Dilation"):
                     ErosionOrDialation(false);
                     break;
                 case ("Opening"):
@@ -163,11 +163,12 @@ namespace INFOIBV
 
         private void ErosionOrDialation(bool IsErosion)
         {
-            int size = H.GetLength(0) / 2;
+            int size;
             int baseMinColor;
             int rounds;
             try
             {
+                size = int.Parse(modeSize) - 1;
                 rounds = int.Parse(textBox1.Text);
             }
             catch
@@ -196,11 +197,11 @@ namespace INFOIBV
                     for (int y = 0; y < InputImage.Size.Height; y++)
                     {
                         int minColor = baseMinColor;
-                        for (int i = -size; i < size; i++)
+                        for (int i = -(size); i <= size; i++)
                         {
-                            for (int j = -size; j < size; j++)
+                            for (int j = -(size); j <= size; j++)
                             {
-                                if (H[i + size, j + size] && x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height)
+                                if (H[i + size, j + size] && x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height) // Do nothing if selected position is out of bounds
                                 {
                                     if (IsErosion)
                                         minColor = Math.Max(minColor, OriginalImage[x + i, y + j].R);
@@ -295,7 +296,7 @@ namespace INFOIBV
                 values1.Points.AddY(values[i]);
             }
 
-            this.label1.Text = "Aantal values: " + valuecounter;
+            label1.Text = "Aantal values: " + valuecounter;
         }
 
         private void BoundaryTrace()
