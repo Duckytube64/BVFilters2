@@ -20,7 +20,7 @@ namespace INFOIBV
         Color[,] Image2;
         bool doubleProgress = false;
         string modeSize, mode;
-        bool[,] boundaryTraceCooridinates;
+        bool[,] PotentialEdge;
         bool[,] H;
 
         public INFOIBV()
@@ -323,10 +323,10 @@ namespace INFOIBV
         {
             // For the BoundaryTrace we chose an 8-neighbourhood to determine if a pixel is a boundary
             // This way curved boundaries are a stronger black, as they will be a bit thicker
+            PotentialEdge = new bool[InputImage.Size.Width, InputImage.Size.Height]; // Initialize boolian array to keep track of boundary pixels
             Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
-            boundaryTraceCooridinates = new bool[InputImage.Size.Width, InputImage.Size.Height]; // Initialize boolian array to keep track of boundary pixels
 
-            for (int x = 0; x < InputImage.Size.Width; x++)
+            for (int x = 0; x < InputImage.Size.Width; x++) 
             {
                 for (int y = 0; y < InputImage.Size.Height; y++)
                 {
@@ -343,42 +343,42 @@ namespace INFOIBV
                         if (x > 0 && y > 0 && OriginalImage[x - 1, y - 1].R == 255)
                         {
                             Image[x, y] = Color.FromArgb(0, 0, 0);
-                            boundaryTraceCooridinates[x, y] = true;
+                            PotentialEdge[x, y] = true;
                         }
                         else if (x > 0 && OriginalImage[x - 1, y].R == 255)
                         {
                             Image[x, y] = Color.FromArgb(0, 0, 0);
-                            boundaryTraceCooridinates[x, y] = true;
+                            PotentialEdge[x, y] = true;
                         }
                         else if (x < InputImage.Size.Width - 1 && y < InputImage.Size.Height - 1 && OriginalImage[x + 1, y + 1].R == 255)
                         {
                             Image[x, y] = Color.FromArgb(0, 0, 0);
-                            boundaryTraceCooridinates[x, y] = true;
+                            PotentialEdge[x, y] = true;
                         }
                         else if (x < InputImage.Size.Width - 1 && OriginalImage[x + 1, y].R == 255)
                         {
                             Image[x, y] = Color.FromArgb(0, 0, 0);
-                            boundaryTraceCooridinates[x, y] = true;
+                            PotentialEdge[x, y] = true;
                         }
                         else if (y > 0 && x < InputImage.Size.Width - 1 && OriginalImage[x + 1, y - 1].R == 255)
                         {
                             Image[x, y] = Color.FromArgb(0, 0, 0);
-                            boundaryTraceCooridinates[x, y] = true;
+                            PotentialEdge[x, y] = true;
                         }
                         else if (y > 0 && OriginalImage[x, y - 1].R == 255)
                         {
                             Image[x, y] = Color.FromArgb(0, 0, 0);
-                            boundaryTraceCooridinates[x, y] = true;
+                            PotentialEdge[x, y] = true;
                         }
                         else if (y < InputImage.Size.Height - 1 && x > 0 && OriginalImage[x - 1, y + 1].R == 255)
                         {
                             Image[x, y] = Color.FromArgb(0, 0, 0);
-                            boundaryTraceCooridinates[x, y] = true;
+                            PotentialEdge[x, y] = true;
                         }
                         else if (y < InputImage.Size.Height - 1 && OriginalImage[x, y + 1].R == 255)
                         {
                             Image[x, y] = Color.FromArgb(0, 0, 0);
-                            boundaryTraceCooridinates[x, y] = true;
+                            PotentialEdge[x, y] = true;
                         }
                         else
                             Image[x, y] = Color.FromArgb(255, 255, 255);
@@ -394,7 +394,7 @@ namespace INFOIBV
             {
                 for (int y = 0; y < InputImage.Size.Height; y++)
                 {
-                    if (boundaryTraceCooridinates[x, y])
+                    if (PotentialEdge[x, y])
                     {
                         message += "(" + x + ", " + y + ")     ";
                         counter++;
