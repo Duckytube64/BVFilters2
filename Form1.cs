@@ -357,8 +357,9 @@ namespace INFOIBV
             sequence.Add(start);
             bool[,] temp = new bool[InputImage.Size.Width, InputImage.Size.Height];
             Array.Copy(potentialEdge, temp, potentialEdge.Length);
+            List<Point> tempList = new List<Point>();
 
-            sequence = FollowBound(start, sequence, 1, CountBoundaryLength(start, temp));
+            sequence = FollowBound(start, sequence, 1, CountBoundaryLength(start, temp), tempList);
 
             string message = "The following coordinates are boundarypixels: \n";
             int counter = 0;
@@ -397,7 +398,7 @@ namespace INFOIBV
             return count;
         }
 
-        private List<Point> FollowBound(Point p, List<Point> sequence, int currLength, int length)                       // Use potentialEdge to guide the algorithm along the boundary recursively
+        private List<Point> FollowBound(Point p, List<Point> sequence, int currLength, int length, List<Point> backTrackList)                       // Use potentialEdge to guide the algorithm along the boundary recursively
         {
             Point newP;
             if (p.IsEmpty)
@@ -406,65 +407,109 @@ namespace INFOIBV
                 return sequence;
             if (p.X + 1 < InputImage.Size.Width && potentialEdge[p.X + 1, p.Y] && outerBound[p.X + 1, p.Y] != 1)    // Check right neighbour
             {
+                if (backTrackList.Count > 0)
+                {
+                    sequence.AddRange(backTrackList);
+                    backTrackList.Clear();
+                }
                 outerBound[p.X + 1, p.Y] = 1;
                 newP = new Point(p.X + 1, p.Y);
                 sequence.Add(newP);
-                return FollowBound(newP, sequence, currLength + 1, length);
+                return FollowBound(newP, sequence, currLength + 1, length, backTrackList);
             }
             else if (p.Y + 1 < InputImage.Size.Height && potentialEdge[p.X, p.Y + 1] && outerBound[p.X, p.Y + 1] != 1)  // Check lower neighbour
             {
+                if (backTrackList.Count > 0)
+                {
+                    sequence.AddRange(backTrackList);
+                    backTrackList.Clear();
+                }
                 outerBound[p.X, p.Y + 1] = 1;
                 newP = new Point(p.X, p.Y + 1);
                 sequence.Add(newP);
-                return FollowBound(newP, sequence, currLength + 1, length);
+                return FollowBound(newP, sequence, currLength + 1, length, backTrackList);
             }
             else if (p.X + 1 < InputImage.Size.Width && p.Y + 1 < InputImage.Size.Height && potentialEdge[p.X + 1, p.Y + 1] && outerBound[p.X + 1, p.Y + 1] != 1)   // Check down-right neighbour
             {
+                if (backTrackList.Count > 0)
+                {
+                    sequence.AddRange(backTrackList);
+                    backTrackList.Clear();
+                }
                 outerBound[p.X + 1, p.Y + 1] = 1;
                 newP = new Point(p.X + 1, p.Y + 1);
                 sequence.Add(newP);
-                return FollowBound(newP, sequence, currLength + 1, length);
+                return FollowBound(newP, sequence, currLength + 1, length, backTrackList);
             }
             else if (p.X - 1 > 0 && potentialEdge[p.X - 1, p.Y] && outerBound[p.X - 1, p.Y] != 1)    // Check left neighbour
             {
+                if (backTrackList.Count > 0)
+                {
+                    sequence.AddRange(backTrackList);
+                    backTrackList.Clear();
+                }
                 outerBound[p.X - 1, p.Y] = 1;
                 newP = new Point(p.X + 1, p.Y);
                 sequence.Add(newP);
-                return FollowBound(new Point(p.X + 1, p.Y), sequence, currLength + 1, length);
+                return FollowBound(new Point(p.X + 1, p.Y), sequence, currLength + 1, length, backTrackList);
             }
             else if (p.X - 1 > 0 && p.Y + 1 < InputImage.Size.Height && potentialEdge[p.X - 1, p.Y + 1] && outerBound[p.X - 1, p.Y + 1] != 1)   // Check lower-left neighbour
             {
+                if (backTrackList.Count > 0)
+                {
+                    backTrackList.RemoveAt(0);
+                    sequence.AddRange(backTrackList);
+                    backTrackList.Clear();
+                }
                 outerBound[p.X - 1, p.Y + 1] = 1;
                 newP = new Point(p.X - 1, p.Y + 1);
                 sequence.Add(newP);
-                return FollowBound(newP, sequence, currLength + 1, length);
+                return FollowBound(newP, sequence, currLength + 1, length, backTrackList);
             }
             else if (p.Y - 1 > 0 && potentialEdge[p.X, p.Y - 1] && outerBound[p.X, p.Y - 1] != 1)   // Check upper neighbour
             {
+                if (backTrackList.Count > 0)
+                {
+                    backTrackList.RemoveAt(0);
+                    sequence.AddRange(backTrackList);
+                    backTrackList.Clear();
+                }
                 outerBound[p.X, p.Y - 1] = 1;
                 newP = new Point(p.X, p.Y - 1);
                 sequence.Add(newP);
-                return FollowBound(newP, sequence, currLength + 1, length);
+                return FollowBound(newP, sequence, currLength + 1, length, backTrackList);
             }
             else if (p.X - 1 > 0 && p.Y - 1 > 0 && potentialEdge[p.X - 1, p.Y - 1] && outerBound[p.X - 1, p.Y - 1] != 1)    // Check upper-left neighbour
             {
+                if (backTrackList.Count > 0)
+                {
+                    backTrackList.RemoveAt(0);
+                    sequence.AddRange(backTrackList);
+                    backTrackList.Clear();
+                }
                 outerBound[p.X - 1, p.Y - 1] = 1;
                 newP = new Point(p.X - 1, p.Y - 1);
                 sequence.Add(newP);
-                return FollowBound(new Point(p.X - 1, p.Y - 1), sequence, currLength + 1, length);
+                return FollowBound(new Point(p.X - 1, p.Y - 1), sequence, currLength + 1, length, backTrackList);
             }
             else if (p.X + 1 < InputImage.Size.Width && p.Y - 1 > 0 && potentialEdge[p.X + 1, p.Y - 1] && outerBound[p.X + 1, p.Y - 1] != 1)    // Check upper-right neighbour
             {
+                if (backTrackList.Count > 0)
+                {
+                    backTrackList.RemoveAt(0);
+                    sequence.AddRange(backTrackList);
+                    backTrackList.Clear();
+                }
                 outerBound[p.X + 1, p.Y - 1] = 1;
                 newP = new Point(p.X + 1, p.Y - 1);
                 sequence.Add(newP);
-                return FollowBound(newP, sequence, currLength + 1, length);
+                return FollowBound(newP, sequence, currLength + 1, length, backTrackList);
             }
             else                                                                                    // If no neighbouring edges can be found, but not all edges have been found, backtrack by one and see if there are remaining edges there
             {
-                newP = sequence[sequence.Count - 2];
-                sequence.Add(newP);
-                return FollowBound(newP, sequence, currLength, length);
+                newP = sequence[sequence.Count - (backTrackList.Count + 1)];
+                backTrackList.Add(newP);
+                return FollowBound(newP, sequence, currLength, length, backTrackList);
             }
         }
 
