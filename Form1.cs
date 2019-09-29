@@ -358,25 +358,23 @@ namespace INFOIBV
             bool[,] temp = new bool[InputImage.Size.Width, InputImage.Size.Height];
             Array.Copy(potentialEdge, temp, potentialEdge.Length);
 
-            FollowBound(start, sequence, 1, CountBoundaryLength(start, temp));
+            sequence = FollowBound(start, sequence, 1, CountBoundaryLength(start, temp));
 
             string message = "The following coordinates are boundarypixels: \n";
             int counter = 0;
 
             for (int x = 0; x < InputImage.Size.Width; x++)            
                 for (int y = 0; y < InputImage.Size.Height; y++)                
-                    if (outerBound[x, y] == 1) 
-                    {
+                    if (outerBound[x, y] == 1)                     
                         Image[x, y] = Color.FromArgb(0, 0, 0);
-                        message += "(" + x + ", " + y + ")     ";
-                        counter++;
-                    }
-                    if (counter == 6)
-                    {
-                        message += "\n";
-                        counter = 0;
-                    }          
-            
+
+            foreach(Point p in sequence)
+            {
+                counter++;
+                message += "(" + p.X + "," + p.Y + "), ";
+                if (counter % 6 == 0)
+                    message += "\n";
+            }
             string header = "List of boundarypixels";
             MessageBoxButtons buttons = MessageBoxButtons.OK;
             DialogResult result;
@@ -464,8 +462,9 @@ namespace INFOIBV
             }
             else                                                                                    // If no neighbouring edges can be found, but not all edges have been found, backtrack by one and see if there are remaining edges there
             {
-                sequence.Add(sequence[sequence.Count - 2]);
-                return FollowBound(sequence[sequence.Count - 2], sequence, currLength, length);
+                newP = sequence[sequence.Count - 2];
+                sequence.Add(newP);
+                return FollowBound(newP, sequence, currLength, length);
             }
         }
 
