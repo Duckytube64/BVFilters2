@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using System.IO;
 
 namespace INFOIBV
@@ -19,6 +20,8 @@ namespace INFOIBV
         Color[,] Image2;
         bool doubleProgress = false;
         string modeSize, mode;
+        bool[,] PotentialEdge;
+        bool[,] H;
 
         public INFOIBV()
         {
@@ -62,6 +65,34 @@ namespace INFOIBV
 
         private void applyButton_Click(object sender, EventArgs e)
         {
+            string filter = (string)comboBox1.SelectedItem;
+            if (filter == "Structuring element")                            // This function should also work when no image is chosen yet
+            {
+                mode = comboBox2.Text;
+                modeSize = textBox2.Text;
+                SetH();
+
+                string message = "Structuring element set as: \n";
+                int size = int.Parse(modeSize);
+                for (int x = 0; x < size * 2 - 1; x++)
+                {
+                    for (int y = 0; y < size * 2 - 1; y++)
+                    {
+                        if (H[x, y])
+                        {
+                            message += "1 ";
+                        }
+                        else
+                        {
+                            message += "0 ";
+                        }
+                    }
+                    message += "\n";
+                }
+
+                MessageBox.Show(message, "Structuring element visual", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
             bool image2Used = false;
             if (InputImage == null) return;                                 // Get out if no input image
             if (OutputImage != null) OutputImage.Dispose();                 // Reset output image
@@ -96,18 +127,12 @@ namespace INFOIBV
             // TODO: include here your own code
             // example: create a negative image
 
-            string filter = (string)comboBox1.SelectedItem;
-
             switch (filter)
             {
-                case ("Structuring element"):
-                    mode = comboBox2.Text;
-                    modeSize = textBox2.Text;
-                    break;
                 case ("Erosion"):
                     ErosionOrDialation(true);
                     break;
-                case ("Dialation"):
+                case ("Dilation"):
                     ErosionOrDialation(false);
                     break;
                 case ("Opening"):
@@ -130,6 +155,9 @@ namespace INFOIBV
                     break;
                 case ("Or"):
                     Or();
+                    break;
+                case ("Value counting"):
+                    ValueCounting();
                     break;
                 case ("Boundary trace"):
                     BoundaryTrace();
@@ -155,12 +183,12 @@ namespace INFOIBV
 
         private void ErosionOrDialation(bool IsErosion)
         {
-            bool[,] H = GetH();
-            int size = H.GetLength(0) / 2;
+            int size;
             int baseMinColor;
             int rounds;
             try
             {
+                size = int.Parse(modeSize) - 1;
                 rounds = int.Parse(textBox1.Text);
             }
             catch
@@ -169,9 +197,9 @@ namespace INFOIBV
             }
 
             if (IsErosion)
-                baseMinColor = 255;
-            else
                 baseMinColor = 0;
+            else
+                baseMinColor = 255;
 
             for (int Nr = 0; Nr < rounds; Nr++)
             {
@@ -189,16 +217,16 @@ namespace INFOIBV
                     for (int y = 0; y < InputImage.Size.Height; y++)
                     {
                         int minColor = baseMinColor;
-                        for (int i = -size; i < size; i++)
+                        for (int i = -(size); i <= size; i++)
                         {
-                            for (int j = -size; j < size; j++)
+                            for (int j = -(size); j <= size; j++)
                             {
-                                if (H[i + size, j + size] && x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height)
+                                if (H[i + size, j + size] && x + i >= 0 && y + j >= 0 && x + i < InputImage.Size.Width && y + j < InputImage.Size.Height) // Do nothing if selected position is out of bounds
                                 {
                                     if (IsErosion)
-                                        minColor = Math.Min(minColor, OriginalImage[x + i, y + j].R);
-                                    else
                                         minColor = Math.Max(minColor, OriginalImage[x + i, y + j].R);
+                                    else
+                                        minColor = Math.Min(minColor, OriginalImage[x + i, y + j].R);
                                 }
                             }
                         }
@@ -241,6 +269,7 @@ namespace INFOIBV
                             Image[x, y] = Color.FromArgb(0,0,0);
                         else
                             Image[x, y] = Color.FromArgb(255,255,255);
+                        progressBar.PerformStep();                              // Increment progress bar
                     }
                 }
         }
@@ -256,14 +285,48 @@ namespace INFOIBV
                             Image[x, y] = Color.FromArgb(0, 0, 0);
                         else
                             Image[x, y] = Color.FromArgb(255, 255, 255);
+                        progressBar.PerformStep();                              // Increment progress bar
                     }
                 }
         }
 
+        private void ValueCounting()
+        {
+            chart1.Series.Clear();
+            chart1.ResetAutoValues();
+            int[] values = new int[256];
+            int valuecounter = 0;
+            for (int x = 0; x < InputImage.Size.Width; x++)
+             {
+                 for (int y = 0; y < InputImage.Size.Height; y++)
+                 {
+                    int value = Image[x, y].R;
+                    if(values[value] == 0)
+                    {
+                        valuecounter++;
+                    }
+                    values[value]++;
+                    progressBar.PerformStep();                              // Increment progress bar
+                 }
+            }
+
+            var values1 = chart1.Series.Add("Values");
+            for (int i = 0; i < 256; i++)
+            {
+                values1.Points.AddY(values[i]);
+            }
+
+            label1.Text = "Aantal values: " + valuecounter;
+        }
+
         private void BoundaryTrace()
         {
+            // For the BoundaryTrace we chose an 8-neighbourhood to determine if a pixel is a boundary
+            // This way curved boundaries are a stronger black, as they will be a bit thicker
+            PotentialEdge = new bool[InputImage.Size.Width, InputImage.Size.Height]; // Initialize boolian array to keep track of boundary pixels
             Color[,] OriginalImage = new Color[InputImage.Size.Width, InputImage.Size.Height];   // Duplicate the original image
-            for (int x = 0; x < InputImage.Size.Width; x++)
+
+            for (int x = 0; x < InputImage.Size.Width; x++) 
             {
                 for (int y = 0; y < InputImage.Size.Height; y++)
                 {
@@ -277,33 +340,93 @@ namespace INFOIBV
                 {
                     if (OriginalImage[x, y].R == 0)
                     {
-                        if (x > 0 && OriginalImage[x - 1, y].R == 255)
+                        if (x > 0 && y > 0 && OriginalImage[x - 1, y - 1].R == 255)
+                        {
                             Image[x, y] = Color.FromArgb(0, 0, 0);
+                            PotentialEdge[x, y] = true;
+                        }
+                        else if (x > 0 && OriginalImage[x - 1, y].R == 255)
+                        {
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            PotentialEdge[x, y] = true;
+                        }
+                        else if (x < InputImage.Size.Width - 1 && y < InputImage.Size.Height - 1 && OriginalImage[x + 1, y + 1].R == 255)
+                        {
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            PotentialEdge[x, y] = true;
+                        }
                         else if (x < InputImage.Size.Width - 1 && OriginalImage[x + 1, y].R == 255)
+                        {
                             Image[x, y] = Color.FromArgb(0, 0, 0);
+                            PotentialEdge[x, y] = true;
+                        }
+                        else if (y > 0 && x < InputImage.Size.Width - 1 && OriginalImage[x + 1, y - 1].R == 255)
+                        {
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            PotentialEdge[x, y] = true;
+                        }
                         else if (y > 0 && OriginalImage[x, y - 1].R == 255)
+                        {
                             Image[x, y] = Color.FromArgb(0, 0, 0);
+                            PotentialEdge[x, y] = true;
+                        }
+                        else if (y < InputImage.Size.Height - 1 && x > 0 && OriginalImage[x - 1, y + 1].R == 255)
+                        {
+                            Image[x, y] = Color.FromArgb(0, 0, 0);
+                            PotentialEdge[x, y] = true;
+                        }
                         else if (y < InputImage.Size.Height - 1 && OriginalImage[x, y + 1].R == 255)
+                        {
                             Image[x, y] = Color.FromArgb(0, 0, 0);
-                        else                        
-                            Image[x, y] = Color.FromArgb(255, 255, 255);                        
+                            PotentialEdge[x, y] = true;
+                        }
+                        else
+                            Image[x, y] = Color.FromArgb(255, 255, 255);
+                    }
+                    progressBar.PerformStep();                              // Increment progress bar
+                }
+            }
+
+            string message = "The following coordinates are boundarypixels: \n";
+            int counter = 0;
+
+            for (int x = 0; x < InputImage.Size.Width; x++)
+            {
+                for (int y = 0; y < InputImage.Size.Height; y++)
+                {
+                    if (PotentialEdge[x, y])
+                    {
+                        message += "(" + x + ", " + y + ")     ";
+                        counter++;
+                    }
+                    if (counter == 4)
+                    {
+                        message += "\n";
+                        counter = 0;
                     }
                 }
             }
+            
+            string header = "List of boundarypixels";
+            MessageBoxButtons buttons = MessageBoxButtons.OK;
+            DialogResult result;
+
+            result = MessageBox.Show(message, header, buttons, MessageBoxIcon.Information);
+
         }
 
-        private bool[,] GetH()
+        private void SetH()
         {
-            bool[,] H = new bool[3, 3];
+            bool[,] newH = new bool[3, 3];
             int size;
             try
             {
                 size = int.Parse(modeSize);                     // Try to get the inputted size - if it's a number
-                H = new bool[size * 2 - 1, size * 2 - 1];
+                newH = new bool[size * 2 - 1, size * 2 - 1];
             }
             catch
             {
-                return H;
+                return;
             }
 
             for (int i = 0; i < size * 2 - 1; i++)
@@ -312,16 +435,16 @@ namespace INFOIBV
                 {
                     if (mode == "Plus")
                     {
-                        if (i == H.GetLength(0) / 2 || j == H.GetLength(1) / 2)
-                            H[i, j] = true;
+                        if (i == newH.GetLength(0) / 2 || j == newH.GetLength(1) / 2)
+                            newH[i, j] = true;
                     }
                     else if (mode == "Rectangle")
                     {
-                        H[i, j] = true;
+                        newH[i, j] = true;
                     }
                 }
             }            
-            return H;
+            H = newH;
         }
 
         private void saveButton_Click(object sender, EventArgs e)
